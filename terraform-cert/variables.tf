@@ -31,3 +31,37 @@ variable "vmcount" {
     type = number
     default = 2
 }
+
+variable "enable_monitoring" {
+  description = "need monitoring or not"
+  type = bool
+  default = "true"
+}
+
+variable "locations" {
+  description = "provide locations"
+  type = list(string)
+  default = ["eastus2", "centralus"]
+}
+
+resource "azurerm_resource_group" "rg3" {
+  count = length(var.locations)
+  location = var.locations[count.index]
+  name = "rg-${var.locations[count.index]}"
+}
+
+resource "azurerm_resource_group" "rg4" {
+  for_each = toset(var.locations)
+  name = "rg-${each.value}"
+  location = each.value
+}
+
+variable "vm_sizes" {
+  type = map(string)
+  default = {
+    dev = "Standard_B1s"
+    test = "Standard_D2s"
+  }
+}
+
+vm_size = var.vm_sizes["dev"]
