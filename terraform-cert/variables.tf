@@ -63,5 +63,3 @@ variable "vm_sizes" {
     test = "Standard_D2s"
   }
 }
-
-vm_size = var.vm_sizes["dev"]
