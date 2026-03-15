@@ -105,3 +105,46 @@ variable "cider_block" {
         error_message = "provide proper cider block"
     }
 }
+
+## Tags example :
+variable "tags" {
+    type = map(string)
+    default = {
+        environment = "dev"
+        project = "deployment"
+        owner = "me"
+    }
+}
+
+resource "azurerm_resoure_group" "rg2" {
+    name = "myrg"
+    location = "eastus2"
+    tage = var.tags
+}
+
+variable "default_tags" {
+    type = map(string)
+    default = {
+        owner = "devops_team"
+        managed_by = "dev"
+    }
+}
+variable "env_tags" {
+    type = map(string)
+    default = {
+        env = "dev"
+    }
+}
+
+resource "azurerm_resoure_group" "rgs" {
+    name = "testrg"
+    location = "eastus2"
+    tags = merge(var.default_tags, var.env_tags)
+}
+
+locals {
+    env_tags = {
+        environment = var.environment
+    }
+    final_tags = merge(var.default_tags, local.env.tags )
+}
